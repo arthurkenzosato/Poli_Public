@@ -1,4 +1,4 @@
-import urllib2
+import urllib
 import thread
 import RPi.GPIO as GPIO
 import time
@@ -39,13 +39,13 @@ def envia_server(idsensor,estadosensor):
           'sensor_id' : idsensor ,'house_id' : '1'
           }
     
-    url_values = urllib.urlencode(values)
+    	url_values = urllib.urlencode(values)
 	url_full = url + '?' + url_values
 	response = urllib.urlopen(url_full).read()
 	print response
 		
 
-#Função de leitura dos sensores, envia json se algo mudar
+#Funcao de leitura dos sensores, envia json se algo mudar
 def my_callback(event):
 
 	global current_window1
@@ -87,7 +87,7 @@ def my_callback(event):
 
 #GPIO.add_event_detect(window1, GPIO.RISING, callback=my_callback) 
 #GPIO.add_event_detect(window2, GPIO.RISING, callback=my_callback) 
-#GPIO.add_event_detect(door, GPIO.RISING, callback=my_callback)
+GPIO.add_event_detect(door, GPIO.RISING, callback=my_callback)
 
 
 
