@@ -7,7 +7,7 @@ import time
 
 
 
-url = "http://argus-adrianodennanni.c9.io/"
+url = "http://argus-adrianodennanni.c9.io/sensor_update"
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -41,6 +41,7 @@ def envia_server(idsensor,estadosensor):
     
     	url_values = urllib.urlencode(values)
 	url_full = url + '?' + url_values
+	print url_full
 	response = urllib.urlopen(url_full).read()
 	print response
 		
@@ -85,9 +86,9 @@ def my_callback(event):
 		current_door = GPIO.input(door)	#atualiza
 
 
-#GPIO.add_event_detect(window1, GPIO.RISING, callback=my_callback) 
+GPIO.add_event_detect(window1, GPIO.RISING, callback=my_callback) 
 #GPIO.add_event_detect(window2, GPIO.RISING, callback=my_callback) 
-GPIO.add_event_detect(door, GPIO.RISING, callback=my_callback)
+#GPIO.add_event_detect(door, GPIO.RISING, callback=my_callback)
 
 
 
@@ -101,6 +102,7 @@ GPIO.add_event_detect(door, GPIO.RISING, callback=my_callback)
 
 while True:
 	pass
+	input
 	
 
 
