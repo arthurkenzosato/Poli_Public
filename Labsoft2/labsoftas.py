@@ -7,7 +7,8 @@ import time
 
 
 
-url = "http://argus-adrianodennanni.c9.io/sensor_update"
+url = "http://argus-adrianodennanni.c9.io/"
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -33,18 +34,34 @@ current_door = GPIO.input(door)
 
 		
 #envia pro servidor e printa a resposta
-def envia_server(idsensor,estadosensor):
+def send_up_sensor(idsensor,estadosensor):
 	global url
+	url_sensor = url + "sensor_update/"
 	values = {'open':estadosensor ,
           'sensor_id' : idsensor ,'house_id' : '1'
           }
     
     	url_values = urllib.urlencode(values)
-	url_full = url + '?' + url_values
+	url_full = url_sensor + '?' + url_values
 	print url_full
 	response = urllib.urlopen(url_full).read()
 	print response
-		
+	
+
+#pede para mudar o estado do alarm
+def send_activate_alarm():
+	global url
+	url_alarm_switch = url + "alarm_switch"
+	print url_alarm_switch 
+	response = urllib.urlopen(url_alarm_switch).read()
+	print response
+
+#Funcao de leitura do input no teclado
+def read_input(keyboard_input):
+	if keyboard_input == "/123":
+		send_activate_alarm()
+
+
 
 #Funcao de leitura dos sensores, envia json se algo mudar
 def my_callback(event):
@@ -60,29 +77,29 @@ def my_callback(event):
 	if GPIO.input(window1) != current_window1:
 		if GPIO.input(window1) == True:
 			print("Abriram a janela1")
-			envia_server(1,0)
+			send_up_sensor(1,0)
 		else :
 			print("Fecharam a janela1")
-			envia_server(1,1)
+			send_up_sensor(1,1)
 		current_window1 = GPIO.input(window1) #atualiza
 
 
 	if GPIO.input(window2) != current_window2:
 		if GPIO.input(window2) == True:
 			print("Abriram a janela2")
-			envia_server(2,0)
+			send_up_sensor(2,0)
 		else :
 			print("Fecharam a janela2")
-			envia_server(2,1)			
+			send_up_sensor(2,1)			
 		current_window2 = GPIO.input(window2) #atualiza
 
 	if GPIO.input(door) != current_door:
 		if GPIO.input(door) == True:
 			print("Abriram a porta")
-			envia_server(0,0)
+			send_up_sensor(0,0)
 		else :
 			print("Fecharam a porta")
-			envia_server(0,1)
+			send_up_sensor(0,1)
 		current_door = GPIO.input(door)	#atualiza
 
 
@@ -101,9 +118,8 @@ GPIO.add_event_detect(window1, GPIO.RISING, callback=my_callback)
 
 
 while True:
-	pass
-	input
-	
+	keyboard_input = raw_input("Please enter your mode")
+	send_activate_alarm()	
 
 
 
