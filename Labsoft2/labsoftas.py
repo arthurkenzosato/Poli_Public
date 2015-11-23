@@ -79,13 +79,9 @@ def my_callback(event):
 
 	if GPIO.input(window1) != current_window1:
 		if GPIO.input(window1) == True:
-<<<<<<< HEAD
-			print("Abriram a janela1")
-			envia_server(1,0)
-=======
+
 			print("Abriram a janela1")
 			send_up_sensor(1,0)
->>>>>>> origin/master
 		else :
 			print("Fecharam a janela1")
 			send_up_sensor(1,1)
