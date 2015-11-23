@@ -2,6 +2,9 @@ import urllib
 import thread
 import RPi.GPIO as GPIO
 import time
+import urllib2
+import base64
+import sys
 
 #house_id = 1
 
@@ -48,7 +51,7 @@ def send_up_sensor(idsensor,estadosensor):
 	print response
 	
 
-#pede para mudar o estado do alarm
+#pede para mudar o estado do alarm, PAREM DE MUDAR O NOME DAS COISAS QUE EU COLOCO
 def send_activate_alarm():
 	global url
 	url_alarm_switch = url + "alarm_switch"
@@ -77,7 +80,7 @@ def my_callback(event):
 	if GPIO.input(window1) != current_window1:
 		if GPIO.input(window1) == True:
 <<<<<<< HEAD
-			print("Abriram a janela1, e o kenzo atrasou denovo")
+			print("Abriram a janela1")
 			envia_server(1,0)
 =======
 			print("Abriram a janela1")
@@ -122,10 +125,88 @@ GPIO.add_event_detect(window1, GPIO.RISING, callback=my_callback)
 
 
 
+#codigo do frances
+def check_password(user_input):
+	try :
+		f = open('password', 'r')
+		password = f.read()
+		if user_input == password :
+			return True
+		else :
+			return False
+	except IOError:
+		f = open('password', 'w')
+		f.write('1234')
+		check_password(user_input)
+
+
+def change_password():
+	timeout = 20
+	entry = getpass.getpass( "Enter a new password : ")
+	check_entry = getpass.getpass( "Please enter a second time : ")
+	if entry == check_entry:
+		f = open('password', 'w')
+		f.write(entry)
+		print "Change password successful"
+	else: 
+		print "Change password failed (password different)..."
+
+
+
+def log_out():
+	global user_auth
+	user_auth = False
+	print "Logout"
+
+def start_mode1():
+	print "Mode 1 started"
+
+def start_mode2():
+	print "Mode 2 started"
+
+def start_mode3():
+	print "Mode 3 started"
+	
+def start_mode4():
+	print "Mode 4 started"
+
+
+def select_mode(user_input):
+	if user_input == '000':
+		change_password()
+	elif user_input == '100' :
+		log_out()
+	elif user_input == '1' :
+		start_mode1()
+	elif user_input == '2' :
+		start_mode2()
+	elif user_input == '3' :
+		start_mode3()
+	elif user_input == '4' :
+		start_mode4()
+
 while True:
 	keyboard_input = raw_input("Please enter your mode")
-	send_activate_alarm()	
+	select_mode(keyboard_input)
+		
+'''
+Codigo do broco
 
+if __name__ == '__main__':
+    page = 'http://argus-adrianodennanni.c9.io/send_snap'
+    with open("/home/ricardo/Documents/fig3.png", "rb") as image_file:
+        encoded_image = base64.b64encode(image_file.read())
+    raw_params = {'timestamp': int(time.time()), 'image': encoded_image, 'house_id': 3}
+    params = urllib.urlencode(raw_params)
+    request = urllib2.Request(page, params)
+    request.add_header("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+    try: 
+    	page = urllib2.urlopen(request)
+    except urllib2.HTTPError as e:
+		error_message = e.read()
+		print error_message
+    print 'Sent!'
+'''
 
 
 
