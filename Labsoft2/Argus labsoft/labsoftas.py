@@ -59,7 +59,7 @@ def my_callback(event):
 
 	if GPIO.input(window1) != current_window1:
 		if GPIO.input(window1) == True:
-			print("Abriram a janela1, e o kenzo atrasou denovo")
+			print("Abriram a janela1")
 			envia_server(1,0)
 		else :
 			print("Fecharam a janela1")
@@ -113,5 +113,4 @@ while True:
 GPIO.cleanup()
 
 print("Fabyfaby")
-
 
