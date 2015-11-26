@@ -16,7 +16,7 @@ url = "http://argus-adrianodennanni.c9.io/"
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-
+user_auth =False
 window1 = 2
 window2 = 3
 door = 4
@@ -41,7 +41,7 @@ def send_up_sensor(idsensor,estadosensor):
 	global url
 	url_sensor = url + "sensor_update/"
 	values = {'open':estadosensor ,
-          'sensor_id' : idsensor ,'house_id' : '1'
+          'sensor_id' : idsensor ,'house_id' : '1' #house_id
           }
     
     	url_values = urllib.urlencode(values)
@@ -50,6 +50,8 @@ def send_up_sensor(idsensor,estadosensor):
 	response = urllib.urlopen(url_full).read()
 	print response
 	
+
+
 
 #pede para mudar o estado do alarm, PAREM DE MUDAR O NOME DAS COISAS QUE EU COLOCO
 def send_activate_alarm():
@@ -65,8 +67,26 @@ def read_input(keyboard_input):
 		send_activate_alarm()
 
 
+def send_autent_servidor(identification, panic):
+	global url
+	url_sensor = url + "sensor_update/"
+	values = {'panic':panic ,
+          'identification' : identification ,'house_id' : '1'
+          }
+    
+    	url_values = urllib.urlencode(values)
+	url_full = url_sensor + '?' + url_values
+	print url_full
+	response = urllib.urlopen(url_full).read()
+	print response
 
-#Funcao de leitura dos sensores, envia json se algo mudar
+
+
+
+
+
+
+#Funcao de leitura dos sensores
 def my_callback(event):
 
 	global current_window1
@@ -79,7 +99,6 @@ def my_callback(event):
 
 	if GPIO.input(window1) != current_window1:
 		if GPIO.input(window1) == True:
-
 			print("Abriram a janela1")
 			send_up_sensor(1,0)
 		else :
@@ -101,6 +120,11 @@ def my_callback(event):
 		if GPIO.input(door) == True:
 			print("Abriram a porta")
 			send_up_sensor(0,0)
+			entry = getpass.getpass("Coloque sua senha :")
+			if check_password(entry) == True :
+				print "Autenticacao feita com sucesso"
+
+
 		else :
 			print("Fecharam a porta")
 			send_up_sensor(0,1)
@@ -182,8 +206,21 @@ def select_mode(user_input):
 		start_mode4()
 
 while True:
-	keyboard_input = raw_input("Please enter your mode")
-	select_mode(keyboard_input)
+	if user_auth != True :
+		entry = getpass.getpass("Enter your login password :")
+		if check_password(entry) == True :
+			user_auth = True
+			print "Login successful"
+	else :
+		timeout = 20
+		print "Choose your mode : "
+		rlist, _, _ = select([sys.stdin], [], [], timeout)
+		if rlist:
+			entry = sys.stdin.readline().rstrip('\n')
+			select_mode(entry)
+		else:
+			log_out()
+			print "No input. Logout..."
 		
 '''
 Codigo do broco
@@ -210,6 +247,6 @@ if __name__ == '__main__':
 
 GPIO.cleanup()
 
-print("Fabyfaby")
+print("Faby faby")
 
 
